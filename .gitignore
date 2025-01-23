@@ -6,3 +6,6 @@ __pycache__/
 
 # macOSの設定ファイル
 .DS_Store
+
+# 保存画像
+media/
