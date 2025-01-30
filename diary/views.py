@@ -33,3 +33,9 @@ class DiaryListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         diaries = Diary.objects.filter(user=self.request.user).order_by('-created_at')
         return diaries
+    
+class DiaryDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Diary
+    template_name = 'diary_detail.html'
+    # slug_field = "title" # モデルのフィールドの名前
+    # slug_url_kwarg = "title" # urls.pyのキーワードの名前
