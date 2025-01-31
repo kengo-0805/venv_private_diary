@@ -10,4 +10,5 @@ urlpatterns = [
     path('diary-list/', views.DiaryListView.as_view(), name="diary_list"),
     path('diary-detail/<int:pk>/', views.DiaryDetailView.as_view(), name="diary_detail"),
     # path('detail/<str:title>/', views.DetailView.as_view(), name="detail"),
+    path('diary-create/', views.DiaryCreateView.as_view(), name="diary_create"),
 ]
