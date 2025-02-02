@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import InquiryForm
 from .models import Diary
+from django.views.generic import DeleteView
 from .forms import InquiryForm, DiaryCreateForm
 
 logger = logging.getLogger(__name__)
@@ -63,3 +64,29 @@ class DiaryCreateView(LoginRequiredMixin, generic.CreateView):
     def form_invalid(self, form):
         messages.error(self.request, '日記の作成に失敗しました。')
         return super().form_invalid(form)
+    
+class DiaryUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = Diary
+    template_name = 'diary_update.html'
+    form_class = DiaryCreateForm
+
+    def get_success_url(self):
+        return reverse_lazy('diary:diary_detail', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form):
+        messages.success(self.request, '日記を更新しました。')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, '日記の更新に失敗しました。')
+        return super().form_invalid(form)
+    
+# 日記削除のビュー
+class DiaryDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = Diary
+    template_name = 'diary_delete.html'
+    success_url = reverse_lazy('diary:diary_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, '日記を削除しました。')
+        return super().delete(request, *args, **kwargs)
