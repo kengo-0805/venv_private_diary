@@ -4,11 +4,13 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from .forms import InquiryForm
 from .models import Diary
 from django.views.generic import DeleteView
 from .forms import InquiryForm, DiaryCreateForm
+from django.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
 
@@ -77,12 +79,21 @@ class DiaryUpdateView(LoginRequiredMixin, generic.UpdateView):
         messages.success(self.request, '日記を更新しました。')
         return super().form_valid(form)
 
+    
+class OnlyYouMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        # URLに埋め込まれた主キーから日記データを一件取得。取得できなかった場合は404エラーを返す。
+        diary = get_object_or_404(Diary, pk=self.kwargs['pk'])
+        # ログインユーザーと日記のユーザーが一致するか判定
+        return diary.user == self.request.user
     def form_invalid(self, form):
         messages.error(self.request, '日記の更新に失敗しました。')
         return super().form_invalid(form)
     
 # 日記削除のビュー
-class DiaryDeleteView(LoginRequiredMixin, generic.DeleteView):
+class DiaryDeleteView(LoginRequiredMixin, OnlyYouMixin, generic.DeleteView):
     model = Diary
     template_name = 'diary_delete.html'
     success_url = reverse_lazy('diary:diary_list')
