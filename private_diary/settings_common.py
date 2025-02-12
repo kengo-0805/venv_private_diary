@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
 
     'diary.apps.DiaryConfig',
     'accounts.apps.AccountsConfig',
@@ -175,3 +176,6 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
 DEFAULT_FROM_EMAIL = os.environ.get('FROM_EMAIL')
 
 MEDIA_URL = '/media/'
+
+# ログイン・ログアウト後の遷移先を設定
+LOGIN_REDIRECT_URL = 'diary:diary_list'
